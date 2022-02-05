@@ -1,17 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import TinderCard from 'react-tinder-card';
 import './TinderCards.css'
-import axios from './axios';
+import db from './firebase'
 const TinderCards = () => {
     const [people, setPeople] = useState([]);
 
-    useEffect(() => {
+    /*
+    //import axios from './axios';
+    using Monogo Base
+     useEffect(() => {
         async function fetchData() {
             const req = await axios.get('tinder/cards');
             console.log(req.data)
             setPeople(req.data);
         }
         fetchData();
+    }, []); */
+    
+    // this is from firebase
+    useEffect(() => {
+        db.collection('people').onSnapshot(snapshot=>{
+            setPeople(snapshot.docs.map(doc=>doc.data()))
+        })
+        // if we have this blank[] this will run ONCE when the component loads and never again
+        // if [people] if the people value changes it will refire the code above
     }, []);
 
     const swiped = (direction, nameToDelete) => {
