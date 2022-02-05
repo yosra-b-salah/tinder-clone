@@ -16,14 +16,18 @@ const TinderCards = () => {
         }
         fetchData();
     }, []); */
-    
+
     // this is from firebase
     useEffect(() => {
-        db.collection('people').onSnapshot(snapshot=>{
-            setPeople(snapshot.docs.map(doc=>doc.data()))
+        const unsubscribe = db.collection('people').onSnapshot(snapshot => {
+            setPeople(snapshot.docs.map(doc => doc.data()))
         })
+        return () => {
+            // this is the cleanup..
+            unsubscribe();
+        }
         // if we have this blank[] this will run ONCE when the component loads and never again
-        // if [people] if the people value changes it will refire the code above
+        // if [people] if the people value changes it will refire the code above and we need the cleanup
     }, []);
 
     const swiped = (direction, nameToDelete) => {
